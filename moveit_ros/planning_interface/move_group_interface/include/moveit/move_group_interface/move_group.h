@@ -709,6 +709,11 @@ public:
   /** \brief Specify whether the robot is allowed to replan if it detects changes in the environment */
   void allowReplanning(bool flag);
 
+  /** \brief Specify whether the place pose is for the end-effector or the attached object. If place_eef is true the
+  the corresponding place pose(s) will be interpreted in the end-effector frame. If place_eef is false, the corresponding
+  place pose(s) will be interpreted in the (attached) object reference frame. Default value is false.*/
+  void placePoseIsEEFPose(const bool place_eef);
+
   /**@}*/
 
   /**

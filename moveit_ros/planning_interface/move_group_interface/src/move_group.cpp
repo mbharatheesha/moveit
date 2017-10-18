@@ -126,6 +126,7 @@ public:
     max_velocity_scaling_factor_ = 1.0;
     max_acceleration_scaling_factor_ = 1.0;
     initializing_constraints_ = false;
+    place_eef_ = false;
 
     if (joint_model_group_->isChain())
       end_effector_link_ = joint_model_group_->getLinkModelNames().back();
@@ -543,6 +544,12 @@ public:
   void setSupportSurfaceName(const std::string& support_surface)
   {
     support_surface_ = support_surface;
+  }
+
+  void placePoseIsEEFPose (const bool &place_eef)
+  {
+    place_eef_ = place_eef;
+    ROS_INFO("Place pose(s) interpreted as end-effector pose(s): %s.", place_eef_ ? "yes" : "no");
   }
 
   const std::string& getPoseReferenceFrame() const
@@ -1132,8 +1139,11 @@ public:
     goal.allowed_planning_time = planning_time_;
     goal.support_surface_name = support_surface_;
     goal.planner_id = planner_id_;
+    goal.place_eef = place_eef_;
     if (!support_surface_.empty())
+    {
       goal.allow_gripper_support_collision = true;
+    }
 
     if (path_constraints_)
       goal.path_constraints = *path_constraints_;
@@ -1251,6 +1261,7 @@ private:
   bool can_look_;
   bool can_replan_;
   double replan_delay_;
+  bool place_eef_;
 
   // joint state goal
   robot_state::RobotStatePtr joint_state_target_;
@@ -1372,6 +1383,11 @@ void moveit::planning_interface::MoveGroup::setMaxVelocityScalingFactor(double m
 void moveit::planning_interface::MoveGroup::setMaxAccelerationScalingFactor(double max_acceleration_scaling_factor)
 {
   impl_->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
+}
+
+void moveit::planning_interface::MoveGroup::placePoseIsEEFPose(const bool place_eef)
+{
+  impl_->placePoseIsEEFPose(place_eef);
 }
 
 moveit::planning_interface::MoveItErrorCode moveit::planning_interface::MoveGroup::asyncMove()
